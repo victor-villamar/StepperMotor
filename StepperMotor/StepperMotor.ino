@@ -1,6 +1,6 @@
 
 
-/////////////////////////Libraries////////////////////////
+/////////////////////////LIBRARIES////////////////////////
 //////////////////////////////////////////////////////////
 
 #include <AccelStepper.h>
@@ -18,6 +18,11 @@
 //Define stepper variable
 AccelStepper stepper(motorInterfaceType,driverPUL,driverDIR);
 
+/////////////////////////GLOBAL CONTROL VARIABLES////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+//define varibales
+bool allowed = true; //allowed flag
 
 void setup() {
   
@@ -33,6 +38,7 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
+  runstepper();
 }
 
 
@@ -50,4 +56,22 @@ void initialCondition(){
   digitalWrite(driverEN,LOW); //set pin LOW
   stepper.disableOutputs(); //disable outputs
 
+}
+
+/*Function to allow motor movement*/
+void runstepper(){
+
+  if(allowed == true){
+    stepper.enableOutputs(); //enable outputs
+    digitalWrite(driverEN,HIGH);
+    stepper.run(); //run the stepper motor
+    stepper.setSpeed(1000); //set a speed
+    stepper.runSpeed(); //move the motor
+  }
+
+  else{
+    stepper.disableOutputs();
+    digitalWrite(driverEN,LOW);
+    return;
+  }
 }
