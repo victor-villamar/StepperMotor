@@ -12,3 +12,4 @@ El formato está basado en [Keep a Changelog](http://keepachangelog.com/), y est
 - AccelSteper library
 - Pines y variable de control del stepper motor.
 - initialCondition(). Función para establecer las condiciones iniciales del stepper motor.
+- runstepper(). Mueve el motor a una cierta velocidad cuando la flag allowed es true.
