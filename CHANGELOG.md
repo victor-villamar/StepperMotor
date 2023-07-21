@@ -19,7 +19,10 @@ El formato está basado en [Keep a Changelog](http://keepachangelog.com/), y est
 ### Added
 - Variables globales de control
 - **checkcommand()**. Función para detectar los comandos recibidos por el puerto Serial.
+- **rotateRelative()**. Función para el movimiento relativo del motor desde la posicion actual.
+- **rotateAbsolute()**. Función para el movimiento del motor a una posición absoluta.
 
     
 ### Changed
 - **runstepper()**. Se ha eliminado el movimiento por velocidad en esta función.
+- **initialCondition()**. Se ha establecido la posición inicial como 0.
