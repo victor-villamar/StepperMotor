@@ -98,6 +98,7 @@ void checkcommand(){
           receivedspeed = Serial.parseFloat();    //value for the speed
           direction = 1;
           Serial.println("Positive direction");
+          rotateRelative();                       //run the function
           break;
         
         case 'n':   //move relativly to the current position (negative)
@@ -105,6 +106,7 @@ void checkcommand(){
           receivedspeed = Serial.parseFloat();    //value for the speed
           direction = -1;
           Serial.println("Negative direction");
+          rotateRelative();                       //run the function
           break;
         
         case 'R':   //move absolutely to the current position (positive)
@@ -148,3 +150,12 @@ void checkcommand(){
 
   }
 }
+
+void rotateRelative(){    //Move X steps from the current position of the stepper motor
+
+  allowed = true;
+  stepper.setMaxSpeed(receivedspeed);     //set the speed
+  stepper.move(direction*receivedsteps);  //set relative distance and direction
+
+}
+
