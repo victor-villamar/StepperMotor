@@ -21,7 +21,7 @@ El formato está basado en [Keep a Changelog](http://keepachangelog.com/), y est
 - **checkcommand()**. Función para detectar los comandos recibidos por el puerto Serial.
 - **rotateRelative()**. Función para el movimiento relativo del motor desde la posicion actual.
 - **rotateAbsolute()**. Función para el movimiento del motor a una posición absoluta.
-
+-**Home()**. Función que mueve el stepper motor desde la posición actual hasta la posición establecida como home (0).
     
 ### Changed
 - **runstepper()**. Se ha eliminado el movimiento por velocidad en esta función.

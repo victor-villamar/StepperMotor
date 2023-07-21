@@ -9,8 +9,8 @@
   s: stop the stepper motor
   a: sets an acceleration value
   l: prints the current position
-
-
+  h: goes back to the home position
+  u: updates the home position
 
 */
 
@@ -128,19 +128,19 @@ void checkcommand(){
           break;
         
         case 'R':   //move absolutely to the current position (positive)
-          receivedsteps = Serial.parseFloat();    //value for the steps
-          receivedspeed = Serial.parseFloat();    //value for the speed
+          receivedsteps = Serial.parseFloat();        //value for the steps
+          receivedspeed = Serial.parseFloat();        //value for the speed
           direction = 1;
           Serial.println("Absolute position [+].");
-          rotateAbsolute();
+          rotateAbsolute();                           //run the function
           break;
         
         case 'r':   //move absolutely to the current position (negative)
-          receivedsteps = Serial.parseFloat();    //value for the steps
-          receivedspeed = Serial.parseFloat();    //value for the speed
+          receivedsteps = Serial.parseFloat();        //value for the steps
+          receivedspeed = Serial.parseFloat();        //value for the speed
           direction = -1;
           Serial.println("Absolute position [-].");
-          rotateAbsolute();
+          rotateAbsolute();                           //run the function
           break;
         
         case 's':   //stops the stepper motor
@@ -168,6 +168,20 @@ void checkcommand(){
           Serial.println(stepper.currentPosition());            //Printing the current position in steps
           break;
         
+        case 'h':   //homing
+          allowed = true;
+          Serial.println("Homing");
+          Home();                     // run the function
+          break;
+        
+        case 'u':  //update home position
+          allowed = false;                //we still keep running disable
+          stepper.disableOutputs();       //disable power pins
+          stepper.setCurrentPosition(0);  //reset the current position. Set new home
+          Serial.print("The current position is updated to: ");
+          Serial.println(stepper.currentPosition());
+          break;
+
         default:
           break;
 
@@ -192,5 +206,18 @@ void rotateAbsolute(){
   allowed = true;
   stepper.setMaxSpeed(receivedspeed);
   stepper.moveTo(direction*receivedsteps);
+}
+
+void Home(){
+  
+  if(stepper.currentPosition() == 0){
+    Serial.println("We are at the home position.");
+    stepper.disableOutputs();                         //disable power pins
+  }
+
+  else{
+    stepper.setMaxSpeed(750);   //set speed manually to 750.
+    stepper.moveTo(0);          //set absolute distance to move
+  }
 }
 
