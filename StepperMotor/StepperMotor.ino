@@ -22,7 +22,12 @@ AccelStepper stepper(motorInterfaceType,driverPUL,driverDIR);
 /////////////////////////////////////////////////////////////////////////
 
 //define varibales
-bool allowed = true; //allowed flag
+bool newdata,allowed = true;     //booleans for new data form serial and allowed flag
+char receivedcommand;           //command for computer
+long receivedsteps = 0;         //value of steps
+long receivedspeed = 0;         //value of speed
+long receivedacceleration = 0; //value of acceleration
+int direction = 1;             // 1 positive, -1 negative
 
 void setup() {
   
@@ -39,6 +44,7 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   runstepper();
+  checkcommand();
 }
 
 
@@ -65,13 +71,80 @@ void runstepper(){
     stepper.enableOutputs(); //enable outputs
     digitalWrite(driverEN,HIGH);
     stepper.run(); //run the stepper motor
-    stepper.setSpeed(1000); //set a speed
-    stepper.runSpeed(); //move the motor
   }
 
   else{
     stepper.disableOutputs();
     digitalWrite(driverEN,LOW);
     return;
+  }
+}
+
+/*Fuction for receiving the commands*/
+
+void checkcommand(){
+
+  if(Serial.available() > 0){ //if we receive something from the computer
+
+    receivedcommand = Serial.read();
+    newdata = true;   //indicate that there is a new data
+
+    if(newdata == true){
+
+      switch(receivedcommand){
+
+        case 'p':   //move relatively to the current position (positive)
+          receivedsteps = Serial.parseFloat();    //value for the steps
+          receivedspeed = Serial.parseFloat();    //value for the speed
+          direction = 1;
+          Serial.println("Positive direction");
+          break;
+        
+        case 'n':   //move relativly to the current position (negative)
+          receivedsteps = Serial.parseFloat();    //value for the steps
+          receivedspeed = Serial.parseFloat();    //value for the speed
+          direction = -1;
+          Serial.println("Negative direction");
+          break;
+        
+        case 'R':   //move absolutely to the current position (positive)
+          receivedsteps = Serial.parseFloat();    //value for the steps
+          receivedspeed = Serial.parseFloat();    //value for the speed
+          direction = 1;
+          Serial.println("Absolute position [+].");
+          break;
+        
+        case 'r':   //move absolutely to the current position (negative)
+          receivedsteps = Serial.parseFloat();    //value for the steps
+          receivedspeed = Serial.parseFloat();    //value for the speed
+          direction = -1;
+          Serial.println("Absolute position [-].");
+          break;
+        
+        case 's':   //stops the stepper motor
+          stepper.stop();               //Stop the motor
+          stepper.disableOutputs();     //disable power pins
+          digitalWrite(driverEN,LOW);
+          Serial.println("Stopped");
+          allowed= false;               //disable running
+          break;
+        
+        case 'a':
+          allowed = false;                                    //Still keep running disable
+          stepper.disableOutputs();                           //disable power
+          receivedacceleration = Serial.parseFloat();         //receive the acceleration form te serial
+          stepper.setAcceleration(receivedacceleration);      //update the value of variable
+          Serial.print("New acceleration value: ");
+          Serial.println(receivedacceleration);
+          break;
+        
+        default:
+          break;
+
+      }
+    }
+
+    newdata = false;
+
   }
 }
