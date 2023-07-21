@@ -1,4 +1,18 @@
+/*Program to control the movement of the stepper motor*/
 
+/*Character for command
+
+  p: rotate the stepper motor in positive direction relative
+  n: rotate the stepper motor in negative direction relative
+  R: rotate the stepper motor to and absolute positive position
+  r: rotate the stepper motor to and absolute negative position
+  s: stop the stepper motor
+  a: sets an acceleration value
+  l: prints the current position
+
+
+
+*/
 
 /////////////////////////LIBRARIES////////////////////////
 //////////////////////////////////////////////////////////
@@ -62,6 +76,10 @@ void initialCondition(){
   digitalWrite(driverEN,LOW); //set pin LOW
   stepper.disableOutputs(); //disable outputs
 
+  stepper.setCurrentPosition(0);
+  Serial.print("\n The current position is: ");
+  Serial.println(stepper.currentPosition());
+
 }
 
 /*Function to allow motor movement*/
@@ -98,6 +116,7 @@ void checkcommand(){
           receivedspeed = Serial.parseFloat();    //value for the speed
           direction = 1;
           Serial.println("Positive direction");
+          rotateRelative();                       //run the function
           break;
         
         case 'n':   //move relativly to the current position (negative)
@@ -105,6 +124,7 @@ void checkcommand(){
           receivedspeed = Serial.parseFloat();    //value for the speed
           direction = -1;
           Serial.println("Negative direction");
+          rotateRelative();                       //run the function
           break;
         
         case 'R':   //move absolutely to the current position (positive)
@@ -112,6 +132,7 @@ void checkcommand(){
           receivedspeed = Serial.parseFloat();    //value for the speed
           direction = 1;
           Serial.println("Absolute position [+].");
+          rotateAbsolute();
           break;
         
         case 'r':   //move absolutely to the current position (negative)
@@ -119,6 +140,7 @@ void checkcommand(){
           receivedspeed = Serial.parseFloat();    //value for the speed
           direction = -1;
           Serial.println("Absolute position [-].");
+          rotateAbsolute();
           break;
         
         case 's':   //stops the stepper motor
@@ -138,6 +160,14 @@ void checkcommand(){
           Serial.println(receivedacceleration);
           break;
         
+        case 'l':   //location
+          allowed = false;
+          stepper.disableOutputs();                              //disable power pins
+          digitalWrite(driverEN,LOW);
+          Serial.print("Current location of the motors: ");
+          Serial.println(stepper.currentPosition());            //Printing the current position in steps
+          break;
+        
         default:
           break;
 
@@ -148,3 +178,19 @@ void checkcommand(){
 
   }
 }
+
+void rotateRelative(){    //Move X steps from the current position of the stepper motor
+
+  allowed = true;
+  stepper.setMaxSpeed(receivedspeed);     //set the speed
+  stepper.move(direction*receivedsteps);  //set relative distance and direction
+
+}
+
+void rotateAbsolute(){
+
+  allowed = true;
+  stepper.setMaxSpeed(receivedspeed);
+  stepper.moveTo(direction*receivedsteps);
+}
+
