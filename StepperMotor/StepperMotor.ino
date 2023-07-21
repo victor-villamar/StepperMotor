@@ -1,4 +1,17 @@
+/*Program to control the movement of the stepper motor*/
 
+/*Character for command
+
+  p: rotate the stepper motor in positive direction relative
+  n: rotate the stepper motor in negative direction relative
+  R: rotate the stepper motor to and absolute positive position
+  r: rotate the stepper motor to and absolute negative position
+  s: stop the stepper motor
+  a: sets an acceleration value
+
+
+
+*/
 
 /////////////////////////LIBRARIES////////////////////////
 //////////////////////////////////////////////////////////
@@ -61,6 +74,10 @@ void initialCondition(){
   //Disable Outputs
   digitalWrite(driverEN,LOW); //set pin LOW
   stepper.disableOutputs(); //disable outputs
+
+  stepper.setCurrentPosition(0);
+  Serial.print("\n The current position is: ");
+  Serial.println(stepper.currentPosition());
 
 }
 
