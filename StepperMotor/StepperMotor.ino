@@ -8,6 +8,7 @@
   r: rotate the stepper motor to and absolute negative position
   s: stop the stepper motor
   a: sets an acceleration value
+  l: prints the current position
 
 
 
@@ -157,6 +158,14 @@ void checkcommand(){
           stepper.setAcceleration(receivedacceleration);      //update the value of variable
           Serial.print("New acceleration value: ");
           Serial.println(receivedacceleration);
+          break;
+        
+        case 'l':   //location
+          allowed = false;
+          stepper.disableOutputs();                              //disable power pins
+          digitalWrite(driverEN,LOW);
+          Serial.print("Current location of the motors: ");
+          Serial.println(stepper.currentPosition());            //Printing the current position in steps
           break;
         
         default:
