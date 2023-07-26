@@ -26,3 +26,12 @@ El formato está basado en [Keep a Changelog](http://keepachangelog.com/), y est
 ### Changed
 - **runstepper()**. Se ha eliminado el movimiento por velocidad en esta función.
 - **initialCondition()**. Se ha establecido la posición inicial como 0.
+
+## [0.0.0] - 2023/07/26
+
+### Added
+- Carpetas Images y Datasheet
+- Imagenes y documentos .pdf a dichas carpetas
+
+### Changed
+- README.md
